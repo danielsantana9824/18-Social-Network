@@ -100,15 +100,15 @@ module.exports = {
   // create a reaction
   async createReaction(req, res) {
     try {
-      
+
       const reaction = new Reaction({
         reactionBody: req.body.reactionBody,
         username: req.body.username,
       });
 
       const thought = await Thought.findByIdAndUpdate(
-        req.params.thoughtId, 
-        { $push: { reactions: reaction } }, 
+        req.params.thoughtId,
+        { $push: { reactions: reaction } },
         { new: true }
       );
 
@@ -123,18 +123,18 @@ module.exports = {
     }
   },
 
-  async  deleteReaction(req, res) {
+  async deleteReaction(req, res) {
     try {
       const thought = await Thought.findByIdAndUpdate(
-        req.params.thoughtId,  
-        { $pull: { reactions: { _id: req.params.reactionId } } },  
-        { new: true }  
+        req.params.thoughtId,
+        { $pull: { reactions: { _id: req.params.reactionId } } },
+        { new: true }
       );
-  
+
       if (!thought) {
         return res.status(404).json({ message: 'Thought not found' });
       }
-  
+
       res.json(thought);
     } catch (err) {
       console.log(err);
