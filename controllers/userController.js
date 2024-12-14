@@ -50,7 +50,7 @@ module.exports = {
     }
   },
 
-  // update a new user
+  // update user
   async updateUser(req, res) {
     try {
 
@@ -84,19 +84,19 @@ module.exports = {
         return res.status(404).json({ message: 'No such user exists' });
       }
 
-      const thought = await Thought.findByIdAndRemove(
-        { users: req.params.userId },
+      const thought = await Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
         { $pull: { users: req.params.userId } },
         { new: true }
       );
 
-      if (!thought) {
-        return res.status(404).json({
-          message: 'user deleted, but no thoughts found',
-        });
+      if (thought.users.length === 0) {
+        await Thought.findByIdAndRemove(req.params.thoughtId);
       }
+      
 
       res.json({ message: 'user successfully deleted' });
+      
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
