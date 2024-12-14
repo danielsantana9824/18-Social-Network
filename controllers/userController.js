@@ -93,10 +93,10 @@ module.exports = {
       if (thought.users.length === 0) {
         await Thought.findByIdAndRemove(req.params.thoughtId);
       }
-      
+
 
       res.json({ message: 'user successfully deleted' });
-      
+
     } catch (err) {
       console.log(err);
       res.status(500).json(err);
