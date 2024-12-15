@@ -9,7 +9,7 @@ module.exports = {
       const users = await User.find();
 
       const userObj = {
-        students,
+        users,
       };
 
       res.json(userObj);
@@ -78,7 +78,7 @@ module.exports = {
   // Delete a user
   async deleteUser(req, res) {
     try {
-      const user = await User.findOneAndRemove({ _id: req.params.userId });
+      const user = await User.findOneAndDelete({ _id: req.params.userId });
 
       if (!user) {
         return res.status(404).json({ message: 'No such user exists' });
@@ -90,7 +90,7 @@ module.exports = {
         { new: true }
       );
 
-      if (thought.users.length === 0) {
+      if (thought && thought.users.length === null) {
         await Thought.findByIdAndRemove(req.params.thoughtId);
       }
 
@@ -105,24 +105,34 @@ module.exports = {
 
   // add friend
   async addFriend(req, res) {
+    console.log('here');
+    
     try {
-      const { userId, friendId } = req.params;
+
+      console.log(req.params);
+      
+
+      const { userId, friend } = req.params;
 
       // check if user or frined exists.
       const user = await User.findById(userId);
-      const friend = await User.findById(friendId);
+      const friends = await User.findById(friend);
+
+      console.log('user',user);
+      console.log('friend',friend);
+      
 
       if (!user || !friend) {
         return res.status(404).json({ message: 'User or Friend not found' });
       }
 
       // avoid duplicated
-      if (user.friends.includes(friendId)) {
+      if (user.friends.includes(friend)) {
         return res.status(400).json({ message: 'User is already friends with this user' });
       }
 
       // add
-      user.friends.push(friendId);
+      user.friends.push(friend);
       await user.save();
 
 
@@ -136,18 +146,21 @@ module.exports = {
   // delete friend
   async removeFriend(req, res) {
     try {
-      const { userId, friendId } = req.params;
+      const { userId, friend } = req.params;
 
       // check if user or frined exists.
       const user = await User.findById(userId);
-      const friend = await User.findById(friendId);
+      const friends = await User.findById(friend);
 
-      if (!user || !friend) {
+      console.log('user',user);
+      console.log('friend',friend);
+
+      if (!user || !friends) {
         return res.status(404).json({ message: 'User or Friend not found' });
       }
 
       // delete friend
-      user.friends.pull(friendId);
+      user.friends.pull(friend);
       await user.save();
 
       res.status(200).json({ message: 'Friend removed successfully', user });
