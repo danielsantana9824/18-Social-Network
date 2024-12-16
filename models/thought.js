@@ -7,20 +7,20 @@ const thoughtSchema = new Schema(
         thoughtText: {
             type: String,
             minlength: 1,
-            maxlength: 280, 
+            maxlength: 280,
             message: 'Content must be between 1 and 280 characters',
             required: true,
         },
 
         createdAt: {
             type: Date,
-            default: Date.now,  
+            default: Date.now,
             get: (value) => {
-              return value.toLocaleString(); 
+                return value.toLocaleString();
             }
-          },
+        },
 
-          username : {
+        username: {
             type: String,
             required: true,
         },
@@ -29,10 +29,15 @@ const thoughtSchema = new Schema(
     },
     {
         toJSON: {
+            virtuals: true,
             getters: true,
         },
     }
 );
+
+thoughtSchema.virtual('reactionCount').get(function() {
+    return this.reactions.length;
+});
 
 const Thought = model('thought', thoughtSchema);
 
