@@ -119,10 +119,10 @@ module.exports = {
       const friends = await User.findById(friend);
 
       console.log('user',user);
-      console.log('friend',friend);
+      console.log('friend',friends);
       
 
-      if (!user || !friend) {
+      if (!user || !friends) {
         return res.status(404).json({ message: 'User or Friend not found' });
       }
 

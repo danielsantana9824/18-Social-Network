@@ -5,3 +5,4 @@ router.route('/:studentId').get(getSingleUser).delete(deleteUser).put(updateUser
 
 put is ok?
 
+3) check delete from thought
